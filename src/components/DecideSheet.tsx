@@ -3,6 +3,7 @@ import { db } from '../db'
 import { consecutiveDays, findConflict, isThisWeek, percentSpent, spentHours } from '../lib/budget'
 import { DEFLECTIONS, DECLINES } from '../lib/replies'
 import { ensurePermission } from '../lib/notify'
+import { syncReminders } from '../lib/push'
 import { fmtWhen, fmtHours, fmtUntil, SIZE_LABELS } from '../lib/format'
 import type { Ask, Settings } from '../types'
 
@@ -48,6 +49,7 @@ export function DecideSheet({ ask, asks, settings, onClose }: Props) {
       status: 'deferred',
       decideBy: new Date(now.getTime() + hours * 3_600_000).toISOString(),
     })
+    syncReminders()
     setCopied(deflection)
     setPane('defer')
   }

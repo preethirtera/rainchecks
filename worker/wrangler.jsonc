@@ -1,0 +1,10 @@
+{
+  "name": "raincheck-push",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-07-01",
+  "triggers": { "crons": ["*/5 * * * *"] },
+  "kv_namespaces": [{ "binding": "REMINDERS", "id": "1c61e3c7864c469388a9370ed44d33c4" }],
+  "vars": {
+    "VAPID_PUBLIC_KEY": "BPcNJLr_1csIJ3E5-F8Sr4HxDCup6PVqOhOtfYoxwXZEmgNhh5Cem48gqDpPH-VTZtUGvOpezsFycrb05LHnTFw"
+  }
+}

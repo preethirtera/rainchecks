@@ -1,8 +1,9 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { db } from './db'
 import { percentSpent, spentHours } from './lib/budget'
 import { addAskFromText, readSharedText } from './lib/asks'
+import { weatherFor } from './lib/weather'
 import { getSettings } from './db'
 import { startReminderLoop } from './lib/notify'
 import { fmtWhen, fmtHours, fmtUntil } from './lib/format'
@@ -14,7 +15,8 @@ import { DEFAULT_SETTINGS, type Ask } from './types'
 import './App.css'
 
 function App() {
-  const asks = useLiveQuery(() => db.asks.toArray(), [], [] as Ask[])
+  const asksRaw = useLiveQuery(() => db.asks.toArray(), [])
+  const asks = asksRaw ?? ([] as Ask[])
   const storedSettings = useLiveQuery(() => db.settings.get('app'), [])
   const settings = { ...DEFAULT_SETTINGS, ...storedSettings }
   const [view, setView] = useState<'inbox' | 'week'>('inbox')
@@ -23,6 +25,10 @@ function App() {
   const [, forceTick] = useState(0)
 
   useEffect(() => startReminderLoop(() => forceTick((n) => n + 1)), [])
+  // keep the push worker's due-times fresh (no-op unless push is enabled)
+  useEffect(() => {
+    import('./lib/push').then((m) => m.syncReminders())
+  }, [])
   // share-sheet / intake-link asks: ?text=... (share_target) or #add=...
   useEffect(() => {
     const intake = () => {
@@ -44,6 +50,30 @@ function App() {
   const now = new Date()
   const pct = percentSpent(asks, settings.weeklyBudgetHours, now)
   const spent = spentHours(asks, now)
+  const weather = weatherFor(pct)
+
+  // ambient rain follows the forecast
+  useEffect(() => {
+    document.body.style.setProperty('--rain-opacity', String(weather.rain))
+  }, [weather.rain])
+
+  // lightning strikes the moment the budget crosses 100% — but not on app
+  // open when already over (baseline is set once data has actually loaded)
+  const prevPct = useRef<number | null>(null)
+  const [strike, setStrike] = useState(false)
+  useEffect(() => {
+    if (asksRaw === undefined) return
+    if (prevPct.current === null) {
+      prevPct.current = pct
+      return
+    }
+    const crossed = prevPct.current < 100 && pct >= 100
+    prevPct.current = pct
+    if (!crossed) return
+    setStrike(true)
+    const t = window.setTimeout(() => setStrike(false), 1600)
+    return () => window.clearTimeout(t)
+  }, [pct, asksRaw])
   const inbox = asks
     .filter((a) => a.status === 'pending' || a.status === 'deferred')
     .sort((x, y) => x.createdAt.localeCompare(y.createdAt))
@@ -80,13 +110,22 @@ function App() {
         </div>
         <div className="budget-info">
           <span className="budget-label">This week's yes-budget</span>
+          <p className="forecast">
+            <span className="forecast-emoji">{weather.emoji}</span> {weather.label}
+          </p>
           <p className="budget-hint">
             {spent === 0
               ? 'Your week is wide open.'
-              : `${fmtHours(spent)} of ${settings.weeklyBudgetHours}h committed${pct > 100 ? '. Over budget, time to raincheck something.' : ''}`}
+              : `${fmtHours(spent)} of ${settings.weeklyBudgetHours}h committed`}
           </p>
         </div>
       </section>
+
+      {strike && (
+        <div className="lightning" aria-hidden="true">
+          ⚡
+        </div>
+      )}
 
       <nav className="tabs" aria-label="View">
         <button

@@ -121,6 +121,82 @@
   color: var(--muted);
 }
 
+.forecast {
+  margin: 0;
+  font-size: var(--text-sm);
+  color: var(--text);
+}
+
+.forecast-emoji {
+  margin-right: var(--space-1);
+}
+
+/* storm mode: the over-budget ring flickers like distant lightning */
+@media (prefers-reduced-motion: no-preference) {
+  .ring-over {
+    animation: storm-flicker 4s ease-in-out infinite;
+  }
+
+  @keyframes storm-flicker {
+    0%,
+    88%,
+    94%,
+    100% {
+      box-shadow: 0 0 24px rgba(255, 235, 59, 0.3);
+    }
+    90%,
+    96% {
+      box-shadow: 0 0 40px rgba(255, 255, 255, 0.55);
+    }
+  }
+}
+
+/* the strike: full-screen flash + bolt when the budget crosses 100% */
+.lightning {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  place-items: center;
+  font-size: clamp(6rem, 30vh, 14rem);
+  pointer-events: none;
+  animation: strike 1.6s ease-out forwards;
+}
+
+@keyframes strike {
+  0%,
+  4% {
+    background: rgba(255, 255, 255, 0);
+    opacity: 0;
+  }
+  6% {
+    background: rgba(255, 255, 255, 0.85);
+    opacity: 1;
+  }
+  9% {
+    background: rgba(255, 255, 255, 0.1);
+  }
+  12% {
+    background: rgba(255, 255, 255, 0.7);
+  }
+  20% {
+    background: rgba(139, 28, 255, 0.15);
+    opacity: 1;
+  }
+  100% {
+    background: rgba(139, 28, 255, 0);
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lightning {
+    animation: none;
+    background: none;
+    opacity: 0.9;
+  }
+}
+
 /* ---------- add ask ---------- */
 
 .add {

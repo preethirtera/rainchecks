@@ -1,11 +1,28 @@
-import { useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { db, saveSettings, exportJSON, importJSON } from '../db'
 import { parseICS } from '../lib/ics'
+import { pushEnabled, enablePush, disablePush } from '../lib/push'
 import type { Settings, Tone } from '../types'
 
 export function SettingsSheet({ settings, onClose }: { settings: Settings; onClose: () => void }) {
   const fileRef = useRef<HTMLInputElement>(null)
   const icsRef = useRef<HTMLInputElement>(null)
+  const [push, setPush] = useState<boolean | null>(null)
+
+  useEffect(() => {
+    pushEnabled().then(setPush)
+  }, [])
+
+  async function togglePush() {
+    if (push === null) return
+    setPush(null)
+    if (push) {
+      await disablePush()
+      setPush(false)
+    } else {
+      setPush(await enablePush())
+    }
+  }
 
   async function onImportICS(file: File) {
     const events = parseICS(await file.text())
@@ -138,6 +155,14 @@ export function SettingsSheet({ settings, onClose }: { settings: Settings; onClo
             </span>
           </label>
         </div>
+
+        <button className="btn" type="button" onClick={togglePush} disabled={push === null}>
+          {push === null
+            ? 'Checking…'
+            : push
+              ? 'Reminders when app is closed: ON — tap to turn off'
+              : 'Remind me even when the app is closed'}
+        </button>
 
         <div className="intake-note">
           <strong>Get asks in without typing:</strong> on Android, share any message to

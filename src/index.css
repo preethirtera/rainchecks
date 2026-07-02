@@ -49,7 +49,8 @@ body::before {
     height: 14px;
     border-radius: 1px;
     background: var(--neon-soft);
-    opacity: 0.12;
+    opacity: var(--rain-opacity, 0.12);
+    transition: opacity 1s ease;
     box-shadow:
       8vw 12vh 0 var(--neon-soft),
       19vw 68vh 0 var(--neon-soft),
