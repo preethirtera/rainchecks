@@ -53,27 +53,25 @@ function App() {
       </header>
 
       <section className="budget" aria-label="Weekly yes-budget">
-        <div className="budget-row">
-          <span className="budget-label">This week's yes-budget</span>
-          <span className={`budget-value ${pct > 100 ? 'budget-over' : ''}`}>
-            {pct}% spent
-          </span>
-        </div>
         <div
-          className="meter"
+          className={`ring ${pct > 100 ? 'ring-over' : ''}`}
+          style={{ ['--pct' as string]: Math.min(pct, 100) }}
           role="meter"
           aria-valuenow={Math.min(pct, 100)}
           aria-valuemin={0}
           aria-valuemax={100}
           aria-label="Yes-budget spent"
         >
-          <div className="meter-fill" style={{ width: `${Math.min(pct, 100)}%` }} />
+          <span className="ring-num">{pct}%</span>
         </div>
-        <p className="budget-hint">
-          {spent === 0
-            ? 'Your week is wide open.'
-            : `${fmtHours(spent)} of ${settings.weeklyBudgetHours}h committed${pct > 100 ? ' — over budget. Time to raincheck something.' : ''}`}
-        </p>
+        <div className="budget-info">
+          <span className="budget-label">This week's yes-budget</span>
+          <p className="budget-hint">
+            {spent === 0
+              ? 'Your week is wide open.'
+              : `${fmtHours(spent)} of ${settings.weeklyBudgetHours}h committed${pct > 100 ? '. Over budget, time to raincheck something.' : ''}`}
+          </p>
+        </div>
       </section>
 
       <nav className="tabs" aria-label="View">
@@ -145,7 +143,10 @@ function App() {
       )}
 
       {view === 'inbox' && inbox.length === 0 && committed.length === 0 && (
-        <p className="empty">Nothing waiting on you. When someone asks, paste it above and the app takes it from there.</p>
+        <p className="empty">
+          <span className="empty-icon">🌧</span>
+          Nothing waiting on you. When someone asks, paste it above and the app takes it from there.
+        </p>
       )}
 
       {view === 'inbox' && <WeekView asks={asks} onOpen={setDeciding} compact />}
