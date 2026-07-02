@@ -3,6 +3,8 @@ import react from '@vitejs/plugin-react'
 import { VitePWA } from 'vite-plugin-pwa'
 
 export default defineConfig({
+  // served from https://preethirtera.github.io/raincheck/
+  base: '/raincheck/',
   plugins: [
     react(),
     VitePWA({
