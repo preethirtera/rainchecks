@@ -139,6 +139,13 @@ export function SettingsSheet({ settings, onClose }: { settings: Settings; onClo
           </label>
         </div>
 
+        <div className="intake-note">
+          <strong>Get asks in without typing:</strong> on Android, share any message to
+          RainCheck from the share sheet. On iPhone, make a Shortcut that opens{' '}
+          <code>…/raincheck/#add=</code> plus the selected text. Slack, Teams and email
+          forwarding arrive with the Phase&nbsp;3 backend.
+        </div>
+
         <div className="sheet-actions">
           <button className="btn" type="button" onClick={() => icsRef.current?.click()}>
             Import calendar invites (.ics)

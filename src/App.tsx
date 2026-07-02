@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { db } from './db'
 import { percentSpent, spentHours } from './lib/budget'
+import { addAskFromText, readSharedText } from './lib/asks'
+import { getSettings } from './db'
 import { startReminderLoop } from './lib/notify'
 import { fmtWhen, fmtHours, fmtUntil } from './lib/format'
 import { AddAsk } from './components/AddAsk'
@@ -21,6 +23,18 @@ function App() {
   const [, forceTick] = useState(0)
 
   useEffect(() => startReminderLoop(() => forceTick((n) => n + 1)), [])
+  // share-sheet / intake-link asks: ?text=... (share_target) or #add=...
+  useEffect(() => {
+    const intake = () => {
+      const shared = readSharedText()
+      if (!shared) return
+      window.history.replaceState(null, '', import.meta.env.BASE_URL)
+      getSettings().then((s) => addAskFromText(shared, s))
+    }
+    intake()
+    window.addEventListener('hashchange', intake)
+    return () => window.removeEventListener('hashchange', intake)
+  }, [])
   // refresh countdowns / due states once a minute
   useEffect(() => {
     const id = window.setInterval(() => forceTick((n) => n + 1), 60_000)

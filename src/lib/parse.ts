@@ -54,7 +54,7 @@ function extractWho(text: string): { who: string | null; rest: string } {
 /** "thurs 7" / "tomorrow 8" — casual bare hours after a day word mean evening.
     Rewrite to "7pm" so chrono picks the hour up instead of dropping it. */
 const BARE_HOUR_AFTER_DAY =
-  /\b((?:mon|tues?|wed(?:nes)?|thur?s?|fri|sat(?:ur)?|sun)(?:day)?|tomorrow|tonight|today)\s+([1-9]|1[01])\b(?!\s*(?::|\.|am|pm))/gi
+  /\b((?:mon|tues?|wed(?:nes)?|thur?s?|fri|sat(?:ur)?|sun)(?:day)?|tomorrow|tonight|today)\s+([1-8])\b(?!\s*(?::|\.|am|pm))/gi
 
 export function parseAsk(rawText: string, now: Date = new Date()): ParsedAsk {
   const { who, rest: restRaw } = extractWho(rawText)

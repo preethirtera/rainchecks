@@ -1,9 +1,8 @@
 import { useMemo, useState } from 'react'
-import { db } from '../db'
 import { parseAsk } from '../lib/parse'
-import { findConflict } from '../lib/budget'
+import { addAskFromText } from '../lib/asks'
 import { fmtWhen, fmtHours, SIZE_LABELS } from '../lib/format'
-import type { Ask, Settings } from '../types'
+import type { Settings } from '../types'
 
 export function AddAsk({ settings }: { settings: Settings }) {
   const [text, setText] = useState('')
@@ -11,35 +10,8 @@ export function AddAsk({ settings }: { settings: Settings }) {
 
   async function add() {
     if (!parsed) return
-    const now = new Date()
-    const bigAsk = parsed.size === 'fullday' || parsed.size === 'multiday'
-    const ask: Ask = {
-      kind: 'ask',
-      rawText: text.trim(),
-      title: parsed.title,
-      who: parsed.who,
-      start: parsed.start ? parsed.start.toISOString() : null,
-      durationHours: parsed.durationHours,
-      size: parsed.size,
-      status: 'pending',
-      createdAt: now.toISOString(),
-      decideBy: null,
-      yesLockedUntil: bigAsk
-        ? new Date(now.getTime() + settings.coolingOffHours * 3_600_000).toISOString()
-        : null,
-      decidedAt: null,
-    }
-    await db.asks.add(ask)
+    await addAskFromText(text, settings)
     setText('')
-
-    // instant heads-up when the new ask collides with something already committed
-    const conflict = findConflict(ask, await db.asks.toArray())
-    if (conflict && 'Notification' in window && Notification.permission === 'granted') {
-      new Notification('Heads up 🌧', {
-        body: `You already have ${conflict.kind === 'alone' ? 'plans (alone time)' : conflict.title} at ${fmtWhen(conflict.start)}.`,
-        tag: 'raincheck-conflict',
-      })
-    }
   }
 
   return (

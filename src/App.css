@@ -698,6 +698,24 @@
   font-size: var(--text-sm);
 }
 
+.intake-note {
+  font-size: var(--text-xs);
+  color: var(--faint);
+  border: 1px dashed var(--line);
+  border-radius: var(--radius-sm);
+  padding: var(--space-2) var(--space-3);
+  line-height: 1.5;
+}
+
+.intake-note strong {
+  color: var(--muted);
+}
+
+.intake-note code {
+  color: var(--neon-soft);
+  font-size: 11px;
+}
+
 /* ---------- footer ---------- */
 
 .phase-note {

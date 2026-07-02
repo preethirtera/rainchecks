@@ -20,6 +20,12 @@ export default defineConfig({
         theme_color: '#060209',
         background_color: '#060209',
         display: 'standalone',
+        // Android share sheet: share any message straight into the inbox
+        share_target: {
+          action: '/raincheck/',
+          method: 'GET',
+          params: { title: 'title', text: 'text', url: 'url' },
+        },
         icons: [
           { src: 'pwa-192.png', sizes: '192x192', type: 'image/png' },
           { src: 'pwa-512.png', sizes: '512x512', type: 'image/png' },
