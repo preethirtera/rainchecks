@@ -20,7 +20,8 @@
   /* type */
   --font-display: 'Avenir Next Condensed', 'Futura', 'Arial Narrow', system-ui, sans-serif;
   --font-body: 'Avenir Next', 'Avenir', system-ui, -apple-system, sans-serif;
-  --font-mono: 'SF Mono', ui-monospace, 'Menlo', monospace;
+  /* UI labels, buttons, chips, statuses — friendly, not terminal-y */
+  --font-ui: 'Montserrat', 'Avenir Next', system-ui, sans-serif;
 
   --text-xs: 0.75rem;
   --text-sm: 0.875rem;

@@ -10,6 +10,9 @@ export default defineConfig({
     VitePWA({
       registerType: 'autoUpdate',
       includeAssets: ['icon.svg', 'apple-touch-icon.png'],
+      workbox: {
+        globPatterns: ['**/*.{js,css,html,svg,png,woff2}'],
+      },
       manifest: {
         name: 'RainCheck',
         short_name: 'RainCheck',
