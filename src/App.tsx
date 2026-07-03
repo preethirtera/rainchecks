@@ -181,7 +181,7 @@ function App() {
                 {due ? (
                   <span className="status status-due">decide now</span>
                 ) : ask.status === 'deferred' ? (
-                  <span className="status status-deferred">☁ {fmtUntil(ask.decideBy!)}</span>
+                  <span className="status status-deferred">? {fmtUntil(ask.decideBy!)}</span>
                 ) : ask.yesLockedUntil && new Date(ask.yesLockedUntil) > now ? (
                   <span className="status status-locked">🔒 {fmtUntil(ask.yesLockedUntil)}</span>
                 ) : (
@@ -211,9 +211,9 @@ function App() {
                 </span>
               </span>
               {ask.status === 'flaked' ? (
-                <span className="status status-flaked">flaked 🥀</span>
+                <span className="status status-flaked">✗ flaked</span>
               ) : (
-                <span className="status status-yes">yes</span>
+                <span className="status status-yes">✓</span>
               )}
             </button>
           ))}

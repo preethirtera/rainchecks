@@ -145,13 +145,13 @@ export function DecideSheet({ ask, asks, settings, onClose }: Props) {
             )}
             <div className="sheet-actions">
               <button className="btn btn-primary" type="button" disabled={locked} onClick={sayYes}>
-                {locked ? `Yes 🔒 ${fmtUntil(ask.yesLockedUntil!)}` : 'Yes — commit it'}
+                {locked ? `✓ Yes 🔒 ${fmtUntil(ask.yesLockedUntil!)}` : '✓ Yes, commit it'}
               </button>
               <button className="btn" type="button" onClick={() => setPane('defer')}>
-                Let me sleep on it
+                ? Let me sleep on it
               </button>
               <button className="btn btn-decline" type="button" onClick={() => setPane('decline')}>
-                Raincheck 🌧
+                ✗ Raincheck 🌧
               </button>
               <button className="btn btn-quiet" type="button" onClick={remove}>
                 Delete
