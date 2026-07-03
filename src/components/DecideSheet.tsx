@@ -1,7 +1,8 @@
 import { useState } from 'react'
 import { db } from '../db'
 import { consecutiveDays, findConflict, isThisWeek, percentSpent, spentHours } from '../lib/budget'
-import { DEFLECTIONS, DECLINES, FLAKE_WARNINGS } from '../lib/replies'
+import { DEFLECTIONS, DECLINES, FLAKE_WARNINGS, counterOffer } from '../lib/replies'
+import { freeEvenings } from '../lib/stats'
 import { ensurePermission } from '../lib/notify'
 import { syncReminders } from '../lib/push'
 import { fmtWhen, fmtHours, fmtUntil, SIZE_LABELS } from '../lib/format'
@@ -183,6 +184,16 @@ export function DecideSheet({ ask, asks, settings, onClose }: Props) {
         {!copied && pane === 'decline' && (
           <div className="sheet-actions">
             <p className="pane-hint">Pick a no. It copies, you paste, the app takes the blame:</p>
+            {freeEvenings(asks, ask.start).map((slot) => {
+              const day = slot.toLocaleDateString(undefined, { weekday: 'long' })
+              const msg = counterOffer(settings.tone, day)
+              return (
+                <button key={day} className="btn btn-msg" type="button" onClick={() => decline(msg)}>
+                  <span className="msg-badge">counter · {day}</span>
+                  {msg}
+                </button>
+              )
+            })}
             {settings.customDeclines.map((msg) => (
               <button key={msg} className="btn btn-msg" type="button" onClick={() => decline(msg)}>
                 <span className="msg-badge msg-badge-yours">yours</span>

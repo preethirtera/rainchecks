@@ -11,6 +11,7 @@ import { AddAsk } from './components/AddAsk'
 import { DecideSheet } from './components/DecideSheet'
 import { SettingsSheet } from './components/SettingsSheet'
 import { WeekView } from './components/WeekView'
+import { StatsView } from './components/StatsView'
 import { DEFAULT_SETTINGS, type Ask } from './types'
 import './App.css'
 
@@ -19,7 +20,7 @@ function App() {
   const asks = asksRaw ?? ([] as Ask[])
   const storedSettings = useLiveQuery(() => db.settings.get('app'), [])
   const settings = { ...DEFAULT_SETTINGS, ...storedSettings }
-  const [view, setView] = useState<'inbox' | 'week'>('inbox')
+  const [view, setView] = useState<'inbox' | 'week' | 'stats'>('inbox')
   const [deciding, setDeciding] = useState<number | null>(null)
   const [showSettings, setShowSettings] = useState(false)
   const [, forceTick] = useState(0)
@@ -158,9 +159,17 @@ function App() {
         >
           Week
         </button>
+        <button
+          className={`tab ${view === 'stats' ? 'tab-active' : ''}`}
+          type="button"
+          onClick={() => setView('stats')}
+        >
+          Stats
+        </button>
       </nav>
 
       {view === 'week' && <WeekView asks={asks} onOpen={setDeciding} />}
+      {view === 'stats' && <StatsView asks={asks} settings={settings} />}
 
       {view === 'inbox' && <AddAsk settings={settings} />}
 

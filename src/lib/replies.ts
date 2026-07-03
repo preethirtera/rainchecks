@@ -21,6 +21,16 @@ export const FLAKE_WARNINGS: Record<Tone, string> = {
     'Bailing after saying yes? Bold. The budget keeps the hours and your reputation keeps the dent.',
 }
 
+/** a no that offers a real alternative, pulled from actual free time */
+export function counterOffer(tone: Tone, day: string): string {
+  const by: Record<Tone, string> = {
+    gentle: `That day doesn't work for me, but I'd love to see you ${day}! 💜`,
+    firm: `Can't make it then. ${day} works if you're free.`,
+    snarky: `my calendar vetoed that one. it has graciously approved ${day} though`,
+  }
+  return by[tone]
+}
+
 export const DECLINES: Record<Tone, string[]> = {
   gentle: [
     "That sounds so fun! But this week is already packed for me. Can we find another time soon? 💜",

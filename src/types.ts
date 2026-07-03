@@ -22,6 +22,8 @@ export interface Ask {
   /** 24-hour rule: Yes is disabled until this passes (big asks only) */
   yesLockedUntil: string | null
   decidedAt: string | null
+  /** weekly reflection: marked when a yes turned out to be a mistake */
+  regretted?: boolean
 }
 
 export type Tone = 'gentle' | 'firm' | 'snarky'
