@@ -36,7 +36,7 @@ npm run dev
 | 3b | Push while closed: Cloudflare Worker on rainchecks.app (site + API), privacy-first empty pushes, 5-min sweep | ✅ |
 | 3c | Connectors: Slack/Teams OAuth, email forwarding (plans@rainchecks.app via CF Email Routing) | next |
 | 4 | Saying-no toolkit: counter-offers from real free time, reclaimed-hours stats, under-budget streaks, regret reflection | ✅ |
-| 5 | Features website: marketing/walkthrough site in the plan-page style | next |
+| 5 | Features website at rainchecks.app/about — full walkthrough, live lightning demo, install guide | ✅ |
 | 6 | Optional E2E-encrypted sync, multi-device, shareable raincheck links | |
 
 ## Design tokens

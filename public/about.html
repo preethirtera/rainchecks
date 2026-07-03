@@ -1,0 +1,309 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="RainChecks — the app for overcommitters. Pause before you say yes.">
+<meta name="theme-color" content="#060209">
+<link rel="icon" type="image/svg+xml" href="/icon.svg">
+<title>RainChecks — pause before you say yes</title>
+<style>
+  :root {
+    --ink-0: #060209; --ink-1: #10061a; --ink-2: #240830; --line: #3a1652;
+    --neon: #8b1cff; --neon-soft: #bc6ff1; --cyan: #00f7ff; --amber: #ffeb3b;
+    --text: #eee6f9; --muted: #9d87ba; --faint: #6c5488;
+    --display: "Avenir Next Condensed", "Futura", "Arial Narrow", system-ui, sans-serif;
+    --body: "Avenir Next", "Avenir", system-ui, -apple-system, sans-serif;
+    --ui: "Montserrat", "Avenir Next", system-ui, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html { background: var(--ink-0); scroll-behavior: smooth; }
+  body {
+    margin: 0; background: var(--ink-0); color: var(--text);
+    font-family: var(--body); line-height: 1.6; -webkit-font-smoothing: antialiased;
+  }
+  body::before {
+    content: ""; position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    background:
+      radial-gradient(ellipse 50% 40% at 78% 4%, rgba(139,28,255,.18), transparent 70%),
+      radial-gradient(ellipse 45% 35% at 12% 96%, rgba(0,247,255,.06), transparent 70%);
+  }
+  .wrap { position: relative; z-index: 1; max-width: 880px; margin: 0 auto; padding: 0 24px 96px; }
+
+  /* hero */
+  .hero { padding: 88px 0 56px; border-bottom: 1px solid var(--line); }
+  .eyebrow {
+    font-family: var(--ui); font-size: 12px; letter-spacing: .18em;
+    text-transform: uppercase; color: var(--faint); margin: 0 0 18px;
+  }
+  h1 {
+    font-family: var(--display); font-weight: 700; font-size: clamp(56px, 9vw, 96px);
+    line-height: .95; margin: 0 0 20px; text-wrap: balance;
+  }
+  .neon { color: var(--neon-soft); text-shadow: 0 0 18px rgba(139,28,255,.55), 0 0 60px rgba(139,28,255,.35); }
+  .thesis { font-size: 20px; color: var(--muted); max-width: 34em; margin: 0 0 32px; text-wrap: balance; }
+  .thesis strong { color: var(--text); }
+  .cta-row { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 40px; }
+  .btn {
+    font-family: var(--body); font-size: 15px; font-weight: 600; text-decoration: none;
+    border-radius: 10px; padding: 12px 22px; border: 1px solid var(--line);
+    background: var(--ink-2); color: var(--text); cursor: pointer; display: inline-block;
+  }
+  .btn-primary { background: var(--neon); border-color: var(--neon); color: #fff; box-shadow: 0 0 16px rgba(139,28,255,.45); }
+  .btn:focus-visible { outline: 2px solid var(--cyan); outline-offset: 2px; }
+
+  .demo {
+    background: linear-gradient(180deg, var(--ink-1), #0b0412);
+    border: 1px solid var(--line); border-radius: 14px;
+    padding: 22px 24px; max-width: 460px;
+    box-shadow: inset 0 1px 0 rgba(188,111,241,.08);
+  }
+  .demo-label { font-family: var(--ui); font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--faint); margin: 0 0 14px; }
+  .demo-ask { font-size: 16px; margin: 0 0 16px; }
+  .demo-ask em { color: var(--neon-soft); font-style: normal; }
+  .meter { height: 10px; border-radius: 5px; background: var(--ink-2); overflow: hidden; margin: 6px 0; }
+  .meter-fill {
+    height: 100%; width: 82%; border-radius: 5px;
+    background: linear-gradient(90deg, var(--neon) 55%, var(--amber));
+    box-shadow: 0 0 12px rgba(139,28,255,.6);
+  }
+  .meter-row { display: flex; justify-content: space-between; font-family: var(--ui); font-size: 12px; color: var(--muted); }
+  .meter-row .hot { color: var(--amber); }
+  .demo-actions { display: flex; gap: 10px; margin-top: 18px; flex-wrap: wrap; }
+  .chipbtn { font-size: 14px; font-weight: 600; border-radius: 8px; padding: 8px 14px; border: 1px solid var(--line); background: var(--ink-2); color: var(--text); }
+  .chipbtn-primary { background: var(--neon); border-color: var(--neon); color: #fff; box-shadow: 0 0 16px rgba(139,28,255,.45); }
+  .chipbtn-ghost { background: transparent; color: var(--muted); }
+
+  /* sections */
+  section { padding: 56px 0 8px; }
+  .kicker { font-family: var(--ui); font-size: 12px; letter-spacing: .18em; text-transform: uppercase; color: var(--neon-soft); margin: 0 0 10px; }
+  h2 { font-family: var(--display); font-weight: 600; font-size: 34px; margin: 0 0 8px; text-wrap: balance; }
+  .lede { color: var(--muted); max-width: 40em; margin: 0 0 28px; }
+  .lede strong { color: var(--text); }
+
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; margin: 24px 0 8px; }
+  .card { background: var(--ink-1); border: 1px solid var(--line); border-radius: 12px; padding: 18px 20px; box-shadow: inset 0 1px 0 rgba(188,111,241,.08); }
+  .card h3 { margin: 0 0 6px; font-size: 15px; font-weight: 600; color: var(--text); }
+  .card p { margin: 0; font-size: 14px; color: var(--muted); }
+
+  /* weather strip */
+  .forecast-strip { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; margin: 26px 0 10px; }
+  .stage { text-align: center; background: var(--ink-1); border: 1px solid var(--line); border-radius: 12px; padding: 16px 8px; }
+  .stage .wx { font-size: 28px; display: block; }
+  .stage .pct { font-family: var(--ui); font-size: 11px; letter-spacing: .1em; color: var(--faint); display: block; margin-top: 6px; text-transform: uppercase; }
+  .stage .nm { font-size: 13px; color: var(--muted); display: block; margin-top: 2px; }
+  .stage-storm { border-color: rgba(255,235,59,.4); }
+  .strike-note { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; margin-top: 18px; }
+
+  /* rules */
+  .rule { display: grid; grid-template-columns: 56px 1fr; gap: 16px; align-items: start; background: var(--ink-1); border: 1px solid var(--line); border-radius: 14px; padding: 22px 24px; margin: 14px 0; }
+  .rule-icon { font-size: 30px; line-height: 1.2; text-align: center; }
+  .rule h3 { margin: 0 0 6px; font-size: 17px; }
+  .rule p { margin: 0; color: var(--muted); font-size: 14.5px; max-width: 52em; }
+  .rule p strong { color: var(--text); }
+
+  /* tone samples */
+  .tones { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 14px; margin: 22px 0; }
+  .tone { background: var(--ink-1); border: 1px solid var(--line); border-radius: 12px; padding: 16px 18px; }
+  .tone .tag { font-family: var(--ui); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--neon-soft); }
+  .tone blockquote { margin: 10px 0 0; padding: 10px 14px; border-left: 3px solid var(--neon); background: var(--ink-2); border-radius: 0 8px 8px 0; font-size: 14px; color: var(--text); }
+
+  /* ledger */
+  .tablebox { overflow-x: auto; border: 1px solid var(--line); border-radius: 12px; margin: 22px 0; }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; min-width: 560px; }
+  th { font-family: var(--ui); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--faint); text-align: left; padding: 12px 16px; border-bottom: 1px solid var(--line); background: var(--ink-1); }
+  td { padding: 12px 16px; border-bottom: 1px solid #1c0b2a; color: var(--muted); vertical-align: top; }
+  tr:last-child td { border-bottom: none; }
+  td:first-child { color: var(--text); font-weight: 500; white-space: nowrap; }
+  .ok { color: var(--cyan); font-family: var(--ui); font-size: 12px; }
+
+  /* install */
+  .install { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; margin: 22px 0; }
+  .install ol { margin: 10px 0 0; padding-left: 20px; color: var(--muted); font-size: 14.5px; }
+  .install li { margin: 6px 0; }
+
+  .footer-note { margin-top: 64px; border-top: 1px solid var(--line); padding-top: 24px; color: var(--faint); font-size: 13.5px; }
+  .footer-note a { color: var(--neon-soft); }
+
+  /* lightning demo */
+  .flash { position: fixed; inset: 0; z-index: 50; display: grid; place-items: center; font-size: clamp(6rem, 30vh, 14rem); pointer-events: none; opacity: 0; }
+  .flash.on { animation: strike 1.6s ease-out forwards; }
+  @keyframes strike {
+    0%,4% { background: rgba(255,255,255,0); opacity: 0; }
+    6% { background: rgba(255,255,255,.85); opacity: 1; }
+    9% { background: rgba(255,255,255,.1); }
+    12% { background: rgba(255,255,255,.7); }
+    20% { background: rgba(139,28,255,.15); opacity: 1; }
+    100% { background: rgba(139,28,255,0); opacity: 0; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .flash.on { animation: none; opacity: .9; background: none; }
+    html { scroll-behavior: auto; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="hero">
+    <p class="eyebrow">For overcommitters · free · no account</p>
+    <h1>Rain<span class="neon">Checks</span></h1>
+    <p class="thesis">The app that lives in the gap between <strong>being asked</strong> and <strong>saying yes</strong>. It shows you what your week already costs before you spend more of it, and helps you decline gracefully when the budget is blown.</p>
+    <div class="cta-row">
+      <a class="btn btn-primary" href="/">Open the app</a>
+      <a class="btn" href="#install">Put it on your phone</a>
+    </div>
+
+    <div class="demo" role="img" aria-label="A RainChecks decision card showing a weekly budget 82 percent spent">
+      <p class="demo-label">Incoming ask</p>
+      <p class="demo-ask">"Dinner Thursday?" — <em>Maya</em></p>
+      <div class="meter"><div class="meter-fill" id="demo-fill"></div></div>
+      <div class="meter-row"><span>This week's yes-budget</span><span class="hot">82% spent</span></div>
+      <div class="demo-actions">
+        <span class="chipbtn chipbtn-primary">? Let me sleep on it</span>
+        <span class="chipbtn">✓ Yes</span>
+        <span class="chipbtn chipbtn-ghost">✗ Raincheck 🌧</span>
+      </div>
+    </div>
+  </header>
+
+  <section>
+    <p class="kicker">The idea</p>
+    <h2>Overcommitment happens in two seconds</h2>
+    <p class="lede">It's the moment between reading a message and typing "yes!!". Every calendar starts working <strong>after</strong> you've already agreed. RainChecks inserts a deliberate pause before the yes — and makes the calendar the bad guy so you don't have to be.</p>
+    <div class="grid">
+      <div class="card"><h3>The commitment inbox</h3><p>Asks land here first, not on your calendar. Paste "dinner thurs 7 w/ maya" and the who, when, and hours are parsed for you. No manual time entry, ever.</p></div>
+      <div class="card"><h3>The yes-budget</h3><p>You set a weekly cap of social hours. Every decision shows the running total at the moment it matters: "saying yes puts this week at 84%."</p></div>
+      <div class="card"><h3>The sleep-on-it timer</h3><p>One tap copies "That sounds so fun! Let me check my calendar and text you" and schedules the reminder to actually decide.</p></div>
+      <div class="card"><h3>The graceful no</h3><p>Declines in your voice — including counter-offers pulled from evenings you're actually free.</p></div>
+    </div>
+  </section>
+
+  <section>
+    <p class="kicker">The forecast</p>
+    <h2>Your week, measured in weather</h2>
+    <p class="lede">The budget isn't a progress bar — it's a sky. The fuller your week, the worse the forecast, and the ambient rain in the app thickens with it. Cross 100% and <strong>lightning strikes</strong>.</p>
+    <div class="forecast-strip">
+      <div class="stage"><span class="wx">🌤️</span><span class="pct">0–24%</span><span class="nm">Clear skies</span></div>
+      <div class="stage"><span class="wx">☁️</span><span class="pct">25–49%</span><span class="nm">Clouds rolling in</span></div>
+      <div class="stage"><span class="wx">🌦️</span><span class="pct">50–74%</span><span class="nm">Drizzle setting in</span></div>
+      <div class="stage"><span class="wx">🌧️</span><span class="pct">75–99%</span><span class="nm">Heavy rain</span></div>
+      <div class="stage stage-storm"><span class="wx">⛈️</span><span class="pct">100%+</span><span class="nm">Storm overhead</span></div>
+    </div>
+    <div class="strike-note">
+      <button class="btn" type="button" id="strike-btn">See the lightning ⚡</button>
+      <span style="color:var(--faint);font-size:13px">— what saying one yes too many looks like</span>
+    </div>
+  </section>
+
+  <section>
+    <p class="kicker">The rules that hold</p>
+    <h2>Software that won't let you people-please</h2>
+    <div class="rule">
+      <span class="rule-icon">🔒</span>
+      <div>
+        <h3>The 24-hour rule</h3>
+        <p>Weekend trips, full-day events, helping someone move: for big asks, <strong>the Yes button physically locks</strong> for a cooling-off period you choose. You can raincheck instantly, you can sleep on it instantly — agreeing on the spot is the one thing the app refuses to do.</p>
+      </div>
+    </div>
+    <div class="rule">
+      <span class="rule-icon">💜</span>
+      <div>
+        <h3>Alone time is real plans</h3>
+        <p>Protected blocks count against your budget, trigger conflict warnings, and the app's language never reveals they're solo. If someone asks, <strong>you already have plans</strong>. Full stop.</p>
+      </div>
+    </div>
+    <div class="rule">
+      <span class="rule-icon">🥀</span>
+      <div>
+        <h3>The flake tax</h3>
+        <p>Backing out of a commitment doesn't refund the hours — <strong>your week already paid for it</strong>. The plan sits struck-through on your list, the flake goes on your record, and yes, the lightning strikes. Saying no early is free; breaking a yes costs.</p>
+      </div>
+    </div>
+    <div class="rule">
+      <span class="rule-icon">⚠️</span>
+      <div>
+        <h3>Conflict heads-up</h3>
+        <p>A new ask that collides with anything you've committed to — including alone time — triggers an instant <strong>"you already have plans at that time"</strong> notification, plus overload warnings like "that would make it four days in a row."</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <p class="kicker">Saying no, beautifully</p>
+    <h2>Replies in your voice, blame on the app</h2>
+    <p class="lede">Pick a tone — or write your own declines, which always appear first. Counter-offers name evenings you're <strong>actually free</strong>, checked against your real week. Everything copies to your clipboard in one tap.</p>
+    <div class="tones">
+      <div class="tone"><span class="tag">Gentle</span><blockquote>That sounds so fun! But this week is already packed for me. Can we find another time soon? 💜</blockquote></div>
+      <div class="tone"><span class="tag">Firm</span><blockquote>I can't make it, my week is already committed.</blockquote></div>
+      <div class="tone"><span class="tag">Snarky</span><blockquote>RainChecks the app has denied this request on my behalf. take it up with the app</blockquote></div>
+      <div class="tone"><span class="tag">Counter-offer</span><blockquote>That day doesn't work for me, but I'd love to see you Saturday! 💜</blockquote></div>
+    </div>
+    <p class="lede">And the Stats tab keeps score for you: <strong>hours reclaimed</strong> by saying no, your <strong>weeks-under-budget streak</strong>, flakes on record, and a Sunday look back at last week's yeses — tap the ones you regretted and the app suggests a saner budget.</p>
+  </section>
+
+  <section>
+    <p class="kicker">Privacy is the architecture</p>
+    <h2>Almost nothing to permit</h2>
+    <p class="lede">RainChecks was designed backwards from "no creepy permissions." Instead of pulling your data in, <strong>you push things in</strong> — and everything lives on your device.</p>
+    <div class="tablebox">
+      <table>
+        <thead><tr><th>Capability</th><th>How RainChecks does it</th><th>Access needed</th></tr></thead>
+        <tbody>
+          <tr><td>Read your asks</td><td>Share sheet or paste; parsed on-device</td><td class="ok">NONE</td></tr>
+          <tr><td>Show plans in your real calendar</td><td>Calendar file you import once — never write access</td><td class="ok">NONE</td></tr>
+          <tr><td>Your data</td><td>Stays in your browser's storage; export/import anytime; no account</td><td class="ok">NONE</td></tr>
+          <tr><td>Remind you when closed</td><td>The server stores only timestamps and sends an <em>empty</em> wake-up push — your device writes the notification from its own data. Nobody's server ever sees who or what your plans are.</td><td class="ok">NOTIFICATIONS, OPT-IN</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="install">
+    <p class="kicker">Get it</p>
+    <h2>On your phone in twenty seconds</h2>
+    <div class="install">
+      <div class="card">
+        <h3>iPhone</h3>
+        <ol>
+          <li>Open <strong>rainchecks.app</strong> in Safari</li>
+          <li>Tap Share → <strong>Add to Home Screen</strong></li>
+          <li>Open it from the raindrop icon</li>
+        </ol>
+      </div>
+      <div class="card">
+        <h3>Android</h3>
+        <ol>
+          <li>Open <strong>rainchecks.app</strong> in Chrome</li>
+          <li>Menu → <strong>Install app</strong></li>
+          <li>RainChecks also appears in your share sheet</li>
+        </ol>
+      </div>
+    </div>
+    <a class="btn btn-primary" href="/">Open RainChecks →</a>
+  </section>
+
+  <p class="footer-note">Made by <a href="https://github.com/preethirtera/rainchecks">Preethi</a> · black &amp; neon purple, always · your plans never leave your device 🌧</p>
+</div>
+
+<div class="flash" id="flash" aria-hidden="true">⚡</div>
+<script>
+  var btn = document.getElementById('strike-btn');
+  var flash = document.getElementById('flash');
+  btn.addEventListener('click', function () {
+    flash.classList.remove('on');
+    void flash.offsetWidth; // restart animation
+    flash.classList.add('on');
+  });
+  // fill the demo meter on load
+  var fill = document.getElementById('demo-fill');
+  if (matchMedia('(prefers-reduced-motion: no-preference)').matches) {
+    fill.style.width = '8%';
+    requestAnimationFrame(function () {
+      fill.style.transition = 'width 1.1s ease-out';
+      fill.style.width = '82%';
+    });
+  }
+</script>
+</body>
+</html>
