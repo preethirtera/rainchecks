@@ -535,10 +535,19 @@
 
 .status-yes {
   color: var(--cyan);
+  font-size: 1.15rem;
+  font-weight: 800;
+  text-shadow: 0 0 10px rgba(0, 247, 255, 0.5);
 }
 
 .status-flaked {
   color: var(--amber);
+  font-weight: 700;
+}
+
+.status-deferred {
+  font-weight: 700;
+  font-size: var(--text-sm);
 }
 
 .ask-flaked .ask-title {
